@@ -1,36 +1,46 @@
-console.log
-const cep = document.querySelector("#cep");
-const btnBuscar = document.querySelector("#btnBuscar");
+const formulario = document.getElementById("formulario");
+const camposNotas = [
+    document.getElementById("nota1"),
+    document.getElementById("nota2"),
+    document.getElementById("nota3"),
+    document.getElementById("nota4")
+];
+const campoMedia = document.getElementById("media");
 
-const estado = document.querySelector("#estado");
-const cidade = document.querySelector("#cidade");
-const bairro = document.querySelector("#bairro");
-const rua = document.querySelector("#rua");
-const ibge = document.querySelector("#ibge");
+function calcularMedia() {
+    const notas = camposNotas.map(campo => Number(campo.value));
 
-btnBuscar.addEventListener("click", function () {
-    let valorCep = cep.value.replace(/\D/g, '');
+    if (camposNotas.some(campo => campo.value === "")) {
+        campoMedia.textContent = "Média: --";
+        return null;
+    }
 
-    if (valorCep.length !== 8) {
-        alert("CEP inválido. Por favor, insira um CEP válido com 8 dígitos.");
+    const media = notas.reduce((total, nota) => total + nota, 0) / notas.length;
+    campoMedia.textContent = "Média: " + media.toFixed(2);
+
+    return media;
+}
+
+camposNotas.forEach(campo => {
+    campo.addEventListener("input", calcularMedia);
+});
+
+formulario.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const nome = document.getElementById("nome").value.trim();
+
+    if (camposNotas.some(campo => campo.value === "")) {
+        alert("Preencha todas as notas antes de registrar o resultado.");
         return;
     }
-    fetch(`https://viacep.com.br/ws/${valorCep}/json/`)
-        .then(response => response.json())
-        .then(dados => {
 
-            if (dados.erro) {
-                alert("CEP não encontrado. Por favor, insira um CEP válido.");
-                return;
-            }
-            estado.value = dados.uf;
-            cidade.value = dados.localidade;
-            bairro.value = dados.bairro;
-            rua.value = dados.logradouro;
-            ibge.value = dados.ibge;
+    const notas = camposNotas.map(campo => Number(campo.value));
+    const media = notas.reduce((total, nota) => total + nota, 0) / notas.length;
 
-            console.log(dados);
-           
-        });
-    console.log(valorCep);
+    localStorage.setItem("nome", nome);
+    localStorage.setItem("notas", JSON.stringify(notas));
+    localStorage.setItem("media", media);
+
+    window.location.href = "resultado.html";
 });

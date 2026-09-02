@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container resultado">
+        <h1>Resultado do aluno</h1>
+        <p id="nomeResultado"></p>
+        <p id="mediaResultado"></p>
+        <h2 id="situacao"></h2>
+
+        <a href="index.html">Voltar</a>
+    </main>
+
+    <script>
+        const nome = localStorage.getItem("nome");
+        const media = Number(localStorage.getItem("media"));
+
+        document.getElementById("nomeResultado").textContent = "Aluno: " + nome;
+        document.getElementById("mediaResultado").textContent = "Média: " + media.toFixed(2);
+
+        const situacao = document.getElementById("situacao");
+
+        if (media > 6) {
+            situacao.textContent = "APROVADO";
+        } else if (media >= 2 && media < 6) {
+            situacao.textContent = "EXAME";
+        } else {
+            situacao.textContent = "REPROVADO";
+        }
+    </script>
+</body>
+</html>
